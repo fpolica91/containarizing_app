@@ -1,0 +1,43 @@
+version: "3"
+
+# dependecies for the project go under services
+services:
+  # this is for the actual api
+  api:
+    image: node:fermium-alpine
+    command: npm run start:dev
+    # what the application depends on to run
+    depends_on:
+      - mongodb
+      - redis
+    ports:
+      - 3000:3000
+      # debuger port below
+      - 9229:9229
+    # live reloading
+    volumes:
+      - ./:/app
+    working_dir: /app
+    networks:
+      - rs-ws-en-nw
+
+  # name for you service can be anything
+  mongodb:
+    # the name of the image we will use
+    image: mongo:latest
+    # the ports we will expose to the host machine
+    ports:
+      - 27017:27017
+    networks:
+      - rs-ws-en-nw
+
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    networks:
+      - rs-ws-en-nw
+
+networks:
+  rs-ws-en-nw:
+# rdcli
